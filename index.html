@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кодекс Математической Мультивселенной</title>
+    <meta name="description" content="Интерактивная тетрадь-комикс по математике для 8 класса в стиле Cyber-Fantasy">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-magenta: #ff0055;
+            --neon-purple: #b829dd;
+            --neon-gold: #ffd700;
+            --neon-green: #00ff9d;
+            --bg-dark: #05050a;
+            --bg-panel: rgba(10, 12, 20, 0.9);
+            --font-main: 'Rajdhani', sans-serif;
+            --font-head: 'Orbitron', sans-serif;
+            --font-pixel: 'Press Start 2P', cursive;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        h1, h2, h3 { font-family: var(--font-head); text-transform: uppercase; letter-spacing: 2px; line-height: 1.2; }
+        h1 { font-size: clamp(2.5rem, 7vw, 5.5rem); text-shadow: 0 0 40px var(--neon-purple); margin-bottom: 1.5rem; }
+        h2 { font-size: clamp(1.8rem, 4.5vw, 3.2rem); margin-bottom: 1.5rem; }
+        p { font-size: clamp(1rem, 2.2vw, 1.35rem); max-width: 800px; margin: 0 auto 1.5rem; color: #ccd6f6; }
+        
+        .highlight { color: var(--neon-cyan); font-weight: 700; }
+        .highlight-magenta { color: var(--neon-magenta); }
+        .highlight-purple { color: var(--neon-purple); }
+        .highlight-gold { color: var(--neon-gold); }
+        .highlight-green { color: var(--neon-green); }
+
+        section {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5rem 2rem;
+            overflow: hidden;
+        }
+
+        .bg-image {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -2;
+        }
+        
+        .section-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(5,5,10,0.8), rgba(5,5,10,0.97));
+            z-index: -1;
+        }
+
+        .card {
+            background: var(--bg-panel);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255,255,255,0.15);
+            padding: 4rem 3rem;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 0 60px rgba(0, 243, 255, 0.25);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        .card.visible { transform: translateY(0); opacity: 1; }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -3px; left: -3px; right: -3px; bottom: -3px;
+            background: linear-gradient(45deg, var(--neon-cyan), transparent, var(--neon-magenta), var(--neon-purple), var(--neon-cyan));
+            background-size: 400% 400%;
+            z-index: -1;
+            border-radius: 26px;
+            opacity: 0.7;
+            animation: borderFlow 4s ease-in-out infinite;
+        }
+
+        @keyframes borderFlow {
+            0%, 100% { background-position: 0% 50%; opacity: 0.5; }
+            50% { background-position: 100% 50%; opacity: 0.9; }
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1.4rem 2.8rem;
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            color: #fff;
+            background: transparent;
+            border: 3px solid var(--neon-cyan);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s ease;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 8px;
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+            white-space: nowrap;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,243,255,0.6), transparent);
+            transition: 0.6s;
+        }
+
+        .btn:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 50px var(--neon-cyan);
+            transform: translateY(-3px) scale(1.03);
+        }
+        .btn:hover::before { left: 100%; }
+
+        .btn-magenta { border-color: var(--neon-magenta); box-shadow: 0 0 25px rgba(255, 0, 85, 0.4); }
+        .btn-magenta:hover { background: var(--neon-magenta); box-shadow: 0 0 50px var(--neon-magenta); }
+        .btn-gold { border-color: var(--neon-gold); box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); }
+        .btn-gold:hover { background: var(--neon-gold); color: #000; box-shadow: 0 0 50px var(--neon-gold); }
+
+        .btn-group { display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center; margin: 2.5rem 0 1.5rem; }
+
+        .quest-badge {
+            display: inline-block;
+            background: rgba(0,0,0,0.75);
+            border: 2px solid var(--neon-gold);
+            color: var(--neon-gold);
+            padding: 0.7rem 1.4rem;
+            font-family: var(--font-pixel);
+            font-size: 0.65rem;
+            margin-bottom: 2rem;
+            animation: pulse 2.5s infinite;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+        .quest-badge.purple { border-color: var(--neon-purple); color: var(--neon-purple); }
+        .quest-badge.magenta { border-color: var(--neon-magenta); color: var(--neon-magenta); }
+        .quest-badge.green { border-color: var(--neon-green); color: var(--neon-green); }
+        .quest-badge.cyan { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+
+        .feature-list {
+            text-align: left;
+            margin-top: 2.5rem;
+            display: grid;
+            gap: 1.2rem;
+        }
+        .feature-item {
+            background: rgba(255,255,255,0.06);
+            padding: 1.6rem;
+            border-left: 4px solid var(--neon-cyan);
+            border-radius: 0 12px 12px 0;
+            transition: all 0.3s ease;
+        }
+        .feature-item:hover { background: rgba(255,255,255,0.1); transform: translateX(8px); }
+        .feature-item h4 { font-family: var(--font-head); font-size: 1.25rem; margin-bottom: 0.7rem; letter-spacing: 1px; }
+        .feature-item.magenta { border-color: var(--neon-magenta); }
+        .feature-item.magenta h4 { color: var(--neon-magenta); }
+        .feature-item.green { border-color: var(--neon-green); }
+        .feature-item.green h4 { color: var(--neon-green); }
+        .feature-item.gold { border-color: var(--neon-gold); }
+        .feature-item.gold h4 { color: var(--neon-gold); }
+
+        /* GALLERY */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+        }
+        .gallery-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            aspect-ratio: 16/10;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(184, 41, 221, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gallery-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 10px 40px rgba(0, 243, 255, 0.4);
+        }
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .gallery-item:hover .gallery-img { transform: scale(1.05); }
+
+        /* FAQ */
+        .faq-container {
+            max-width: 800px;
+            margin: 2.5rem auto 0;
+            display: grid;
+            gap: 1rem;
+        }
+        .faq-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .faq-item:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 5px 20px rgba(0, 243, 255, 0.2);
+        }
+        .faq-question {
+            padding: 1.3rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-head);
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+        .faq-question:hover {
+            background: rgba(0, 243, 255, 0.1);
+        }
+        .faq-icon {
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+            transition: transform 0.3s ease;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            padding: 0 1.5rem;
+            background: rgba(0,0,0,0.2);
+        }
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding: 1.2rem 1.5rem;
+        }
+
+        /* SOCIAL LINKS */
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.9rem 1.8rem;
+            background: rgba(74, 118, 168, 0.15);
+            border: 2px solid #4a76a8;
+            border-radius: 8px;
+            color: #4a76a8;
+            text-decoration: none;
+            font-family: var(--font-head);
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .social-link:hover {
+            background: #4a76a8;
+            color: #fff;
+            box-shadow: 0 0 30px #4a76a8;
+            transform: translateY(-3px);
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, rgba(10, 12, 20, 0.98), rgba(20, 22, 35, 0.98));
+            border: 3px solid var(--neon-gold);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.4);
+            animation: modalAppear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        @keyframes modalAppear {
+            0% { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem; right: 1rem;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            font-size: 2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        .modal-close:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+        .modal-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: celebrate 1s ease-in-out;
+        }
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.2) rotate(-10deg); }
+            75% { transform: scale(1.2) rotate(10deg); }
+        }
+        .modal-title {
+            font-family: var(--font-head);
+            font-size: 2rem;
+            color: var(--neon-gold);
+            margin-bottom: 1rem;
+        }
+        .modal-text {
+            font-size: 1.2rem;
+            color: #ccd6f6;
+            margin-bottom: 2rem;
+        }
+
+        /* FORM STYLES */
+        .form-wrapper {
+            background: rgba(15, 15, 25, 0.6);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 550px;
+            margin: 2rem auto 0;
+            backdrop-filter: blur(10px);
+        }
+        .cyber-form { display: grid; gap: 1rem; }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            font-family: var(--font-main);
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.5); }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+            background: rgba(255,255,255,0.08);
+        }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        .full-width { width: 100%; }
+
+        .contact-block { margin-top: 2.5rem; padding-top: 1.8rem; border-top: 1px solid rgba(255,255,255,0.15); }
+        .contact-email {
+            color: var(--neon-cyan); font-size: 1.2rem; text-decoration: none; font-weight: 600; transition: all 0.3s;
+            display: inline-block; padding: 0.3rem 0.6rem; border-radius: 4px;
+        }
+        .contact-email:hover { text-shadow: 0 0 20px var(--neon-cyan); background: rgba(0, 243, 255, 0.1); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 18px currentColor; }
+            50% { opacity: 0.75; box-shadow: 0 0 35px currentColor; }
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); } 20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(-3px, -3px); } 60% { transform: translate(3px, 3px); }
+            80% { transform: translate(3px, -3px); } 100% { transform: translate(0); }
+        }
+        .glitch-text:hover { animation: glitch 0.35s cubic-bezier(.25, .46, .45, .94) both infinite; color: var(--neon-magenta); cursor: default; }
+
+        #hero .section-overlay { background: linear-gradient(to bottom, rgba(88,28,135,0.35), rgba(5,5,10,0.97)); }
+        #ch1 .section-overlay { background: linear-gradient(to right, rgba(255,0,85,0.2), rgba(5,5,10,0.97)); }
+        #ch2 .section-overlay { background: radial-gradient(circle at center, rgba(0,255,157,0.15), rgba(5,5,10,0.97)); }
+        #ch3 .section-overlay { background: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(10,12,20,0.97)); }
+        #finale .section-overlay { background: linear-gradient(to top, rgba(5,5,10,0.95), rgba(5,5,10,0.5)); }
+
+        @media (max-width: 768px) {
+            section { padding: 4rem 1.2rem; }
+            .card { padding: 2.5rem 1.5rem; }
+            h1 { font-size: 2.4rem; } h2 { font-size: 1.7rem; }
+            .btn-group { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 320px; text-align: center; }
+            .gallery-grid { grid-template-columns: 1fr; }
+        }
+
+        /* PARTICLES ANIMATION */
+        .particles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-cyan);
+            animation: float 15s infinite linear;
+            opacity: 0.6;
+        }
+        @keyframes float {
+            from { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            to { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PARTICLES BACKGROUND -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 🌀 HERO -->
+    <section id="hero">
+        <div class="bg-image" style="background-image: url('hero.jpg');"></div>
+        <div class="section-overlay"></div>
+        <div class="card">
+            <span class="quest-badge purple">🌀 SYSTEM INITIALIZED</span>
+            <h1 class="glitch-text">Это не учебник. Это <span class="highlight-purple">Ключ.</span></h1>
+            <p>Каждая страница — это мир. Каждый мир — это вызов. Открой «Кодекс Математической Мультивселенной» и начни свое восхождение на Пик Знаний в уникальном <span class="highlight-purple">Cyber-Fantasy</span> приключении для 8 класса.</p>
+            <a href="#contract" class="btn">⚡ ОТКРЫТЬ ВРАТА КОДЕКСА</a>
+        </div>
+    </section>
+
+    <!-- ⚔️ CHAPTER 1 -->
+    <section id="ch1">
+        <div class="bg-image" style="background-image: url('ch1.jpg');"></div>
+        <div class="section-overlay"></div>
+        <div class="card">
+            <span class="quest-badge magenta">⚔️ WORLD 01</span>
+            <h2 class="highlight-magenta">Глава 1: Путь Самурая и Искусство Квадратных Уравнений</h2>
+            <p>В этом мире законы алгебры пишутся сталью. Тренируй разум, чтобы выжить.</p>
+            <div class="feature-list">
+                <div class="feature-item magenta">
+                    <h4>Боевые Формулы</h4>
+                    <p>Изучай стойки дискриминанта, чтобы блокировать удары и проводить смертельные контратаки. Твоя ручка — это катана, а страницы тетради — твое поле битвы.</p>
+                </div>
+                <div class="feature-item gold">
+                    <h4>Кристаллы Знаний</h4>
+                    <p>Собирай сияющие Кристаллы Знаний за правильные ответы. Каждый кристалл — это ключ к разблокировке секретных страниц и уникальных артефактов в пиксельном стиле.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🧚‍♂️ CHAPTER 2 -->
+    <section id="ch2">
+        <div class="bg-image" style="background-image: url('ch2.jpg');"></div>
+        <div class="section-overlay"></div>
+        <div class="card">
+            <span class="quest-badge green">🧚‍️ WORLD 02</span>
+            <h2 class="highlight-green">Глава 2: Зельеварение Рациональных Чисел</h2>
+            <p>Сказка, в которой магия — это точный расчет.</p>
+            <div class="feature-list">
+                <div class="feature-item green">
+                    <h4>Рецепты Силы</h4>
+                    <p>Правильно сочетай дроби и пропорции в магических котлах, чтобы создавать зелья, открывающие скрытые тропы в лесу.</p>
+                </div>
+                <div class="feature-item green">
+                    <h4>Кристаллы Знаний</h4>
+                    <p>Заряжай Кристаллы Знаний энергией решённых задач, чтобы вдохнуть жизнь и цвет в застывших сказочных существ.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 👾 CHAPTER 3 -->
+    <section id="ch3">
+        <div class="bg-image" style="background-image: url('ch3.jpg');"></div>
+        <div class="section-overlay"></div>
+        <div class="card">
+            <span class="quest-badge cyan">👾 WORLD 03</span>
+            <h2>Глава 3: Хакер Смысла и Пилотирование Графиков</h2>
+            <p>Самое опасное погружение. Реальность Void нестабильна, и только ты можешь ее удержать.</p>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h4>Постройка реальности</h4>
+                    <p>Твоя задача — строить графики функций. Они становятся мостами через кибер-пропасти и надежными укрытиями.</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Кристаллы Знаний</h4>
+                    <p>Находи скрытые Кристаллы Знаний в коде измерения — они усиливают твои способности и открывают доступ к бонусным уровням.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ⛰️ FINALE -->
+    <section id="finale">
+        <div class="bg-image" style="background-image: url('finale.jpg');"></div>
+        <div class="section-overlay"></div>
+        <div class="card">
+            <span class="quest-badge gold">⛰️ BOSS FIGHT</span>
+            <h2 class="highlight-gold">Финал: Битва с Боссом на Пике Знаний</h2>
+            <p>Это не стандартный тест. Это кульминация твоей саги. Примени всё, чему научился в мирах самураев, алхимиков и хакеров.</p>
+            <div class="feature-list">
+                <div class="feature-item gold">
+                    <h4>Синтез Магии</h4>
+                    <p>Используй алгебраические заклинания и геометрические конструкции одновременно, чтобы нанести решающий удар.</p>
+                </div>
+                <div class="feature-item gold">
+                    <h4>Твой Триумф</h4>
+                    <p>После победы над Боссом Пик Знаний окрасится в цвета твоего прогресса, навсегда сохранив историю твоего прохождения.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🖼️ GALLERY -->
+    <section id="gallery" style="min-height: auto; padding: 6rem 2rem;">
+        <div class="section-overlay" style="background: linear-gradient(to bottom, rgba(5,5,10,0.95), rgba(5,5,10,0.98));"></div>
+        <div class="card" style="max-width: 1100px;">
+            <span class="quest-badge cyan">🎨 GALLERY</span>
+            <h2 class="highlight-cyan">Галерея Миров</h2>
+            <p>Загляни внутрь Кодекса и увидь, как оживают миры математики</p>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="gallery1.jpg" alt="Разворот: Самураи" class="gallery-img" onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'><div class=\'gallery-placeholder-icon\'>⚔️</div><div class=\'gallery-placeholder-text\'>Разворот: Самураи</div></div>'">
+                </div>
+                <div class="gallery-item">
+                    <img src="gallery2.jpg" alt="Разворот: Алхимия" class="gallery-img" onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'><div class=\'gallery-placeholder-icon\'>🧪</div><div class=\'gallery-placeholder-text\'>Разворот: Алхимия</div></div>'">
+                </div>
+                <div class="gallery-item">
+                    <img src="gallery3.jpg" alt="Разворот: Void" class="gallery-img" onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'><div class=\'gallery-placeholder-icon\'>💻</div><div class=\'gallery-placeholder-text\'>Разворот: Void</div></div>'">
+                </div>
+                <div class="gallery-item">
+                    <img src="gallery4.jpg" alt="Разворот: Босс" class="gallery-img" onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'><div class=\'gallery-placeholder-icon\'>🐉</div><div class=\'gallery-placeholder-text\'>Разворот: Босс</div></div>'">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ❓ FAQ -->
+    <section id="faq" style="min-height: auto; padding: 6rem 2rem;">
+        <div class="section-overlay" style="background: linear-gradient(to bottom, rgba(5,5,10,0.98), rgba(5,5,10,0.95));"></div>
+        <div class="card" style="max-width: 900px;">
+            <span class="quest-badge green">❓ FAQ</span>
+            <h2 class="highlight-green">Часто Задаваемые Вопросы</h2>
+            <p>Всё, что нужно знать о Кодексе Математической Мультивселенной</p>
+            
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>📚 Для какого класса предназначен Кодекс?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Кодекс разработан специально для учащихся 8 класса. Все темы соответствуют школьной программе по алгебре и геометрии, но поданы в увлекательной игровой форме.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>🖨️ Как печатать тетрадь?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Кодекс оптимизирован для печати на стандартной бумаге формата А4. После печати листы складываются пополам и сшиваются, образуя удобную тетрадь формата А5. Вы также можете заказать профессиональную печать в любой типографии.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>💎 Что такое Кристаллы Знаний?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Кристаллы Знаний — это уникальная игровая механика. За каждое правильно решённое задание ты получаешь сияющий кристалл. Собери коллекцию, чтобы разблокировать секретные страницы, бонусные уровни и эксклюзивные артефакты в пиксельном стиле.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>⏱️ Сколько времени займёт прохождение?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Всё зависит от твоего темпа! В среднем, на полное прохождение всех трёх миров и финальную битву уходит 20-30 часов. Но ты можешь проходить Кодекс в своём ритме — это твоё приключение!</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>💳 Как оформить предзаказ?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Просто заполни форму предзаказа внизу этой страницы. После подтверждения ты получишь ссылку на скачивание PDF-файла Кодекса, а также доступ к дополнительным материалам и обновлениям.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 💎 CONTRACT / FOOTER -->
+    <section id="contract">
+        <div class="bg-image" style="background-image: url('contract.jpg');"></div>
+        <div class="section-overlay"></div>
+        <div class="card">
+            <span class="quest-badge">💎 CONTRACT</span>
+            <h2>Мультивселенная ждет твоего имени</h2>
+            <p>Твоя интерактивная тетрадь-комикс (идеально складывается в формат А5 при печати на стандартном А4) — это твой личный портал. Заполни форму ниже, чтобы забронировать экземпляр.</p>
+            
+            <!-- FORM -->
+            <div class="form-wrapper">
+                <form action="https://formspree.io/f/xbdpqedn" method="POST" class="cyber-form" id="orderForm">
+                    <input type="hidden" name="_subject" value="🔥 Новый предзаказ: Кодекс Математической Мультивселенной">
+                    
+                    <div class="form-group">
+                        <input type="text" name="Имя" placeholder="Имя Хранителя" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="Email" placeholder="Твой email для связи" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" name="Телефон" placeholder="Телефон (опционально)">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="Сообщение" rows="3" placeholder="Вопросы или пожелания"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-magenta full-width">📜 ПОДПИСАТЬ КОНТРАКТ (ПРЕДЗАКАЗ)</button>
+                </form>
+            </div>
+
+            <!-- SOCIAL LINKS - VK ONLY -->
+            <div class="social-links">
+                <a href="https://vk.com/pr9nic" target="_blank" class="social-link">
+                    <span>🔷</span> ВКонтакте: @pr9nic
+                </a>
+            </div>
+
+            <!-- SPONSOR BUTTON -->
+            <div class="btn-group" style="margin-top: 2rem;">
+                <a href="#sponsor" class="btn btn-gold">⭐ СТАТЬ СПОНСОРОМ ПРОЕКТА</a>
+            </div>
+            
+            <!-- CONTACTS -->
+            <div class="contact-block">
+                <p style="margin-bottom: 0.6rem; font-size: 0.95rem; opacity: 0.75;">📬 Контакты для связи:</p>
+                <a href="mailto:pr9nic220@gmail.com" class="contact-email">✉️ pr9nic220@gmail.com</a>
+            </div>
+            
+            <p style="margin-top: 2.5rem; font-size: 0.75rem; opacity: 0.45; letter-spacing: 1px;">
+                © 2026 Mathematical Multiverse Codex. All realities reserved.
+            </p>
+        </div>
+    </section>
+
+    <!-- THANK YOU MODAL -->
+    <div class="modal-overlay" id="thankYouModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-icon">🎉</div>
+            <h2 class="modal-title">Контракт Подписан!</h2>
+            <p class="modal-text">
+                Добро пожаловать в Мультивселенную, Хранитель!<br><br>
+                Твоя заявка успешно отправлена. Проверь почту — скоро ты получишь доступ к Кодексу и начнёшь своё эпическое приключение!
+            </p>
+            <button class="btn btn-gold" onclick="closeModal()">🚀 НАЧАТЬ ПУТЕШЕСТВИЕ</button>
+        </div>
+    </div>
+
+    <script>
+        // PARTICLES GENERATION
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                
+                const colors = ['#00f3ff', '#ff0055', '#b829dd', '#ffd700'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
+                
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // FAQ ACCORDION
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const isActive = item.classList.contains('active');
+                
+                document.querySelectorAll('.faq-item').forEach(faq => {
+                    faq.classList.remove('active');
+                });
+                
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // MODAL HANDLING
+        function showModal() {
+            document.getElementById('thankYouModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('thankYouModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('thankYouModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Form submission handler - show modal after submit
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            setTimeout(() => {
+                showModal();
+            }, 1500);
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // SCROLL ANIMATIONS
+        const observerOptions = { threshold: 0.15, rootMargin: "0px 0px -30px 0px" };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card').forEach(card => observer.observe(card));
+
+        // SMOOTH SCROLL
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // PARALLAX EFFECT (only for hero)
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroBg = document.querySelector('#hero .bg-image');
+            if (heroBg && scrolled < window.innerHeight) {
+                heroBg.style.transform = `translateY(${scrolled * 0.15}px)`;
+            }
+        }, { passive: true });
+    </script>
+</body>
+</html>
